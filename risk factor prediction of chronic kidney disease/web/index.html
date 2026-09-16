@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CKD Risk Predictor | Low-Level PyTorch Inference Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Chronic Kidney Disease Risk Assessment</h1>
+          <p class="subtitle">Pattern Recognition & Neural Risk Stratification • In-Browser PyTorch Architecture</p>
+        </div>
+      </div>
+      <div class="engine-badge">
+        <span class="status-dot"></span>
+        <span>Low-Level PyTorch MLP Engine Active</span>
+      </div>
+    </header>
+
+    <!-- Quick Presets -->
+    <section class="presets-section">
+      <span class="presets-label">Clinical Presets:</span>
+      <div class="preset-buttons">
+        <button type="button" class="preset-btn" onclick="loadPreset('healthy')">
+          <span class="dot dot-healthy"></span> Normal / Low Risk
+        </button>
+        <button type="button" class="preset-btn" onclick="loadPreset('early')">
+          <span class="dot dot-warning"></span> Early Stage Risk
+        </button>
+        <button type="button" class="preset-btn" onclick="loadPreset('hypertensive')">
+          <span class="dot dot-orange"></span> Hypertensive Nephropathy
+        </button>
+        <button type="button" class="preset-btn" onclick="loadPreset('critical')">
+          <span class="dot dot-danger"></span> Advanced Stage 4-5 CKD
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Grid -->
+    <main class="main-grid">
+      <!-- Input Form Card -->
+      <section class="card form-card">
+        <div class="card-header">
+          <h2>Patient Biomarkers & Risk Factors</h2>
+          <span class="badge">26 Clinical Features</span>
+        </div>
+
+        <form id="ckdForm" onsubmit="event.preventDefault(); runInference();">
+          <!-- Tabs Navigation -->
+          <div class="tabs-nav">
+            <button type="button" class="tab-btn active" onclick="switchTab('vitals')">Vitals & Demographics</button>
+            <button type="button" class="tab-btn" onclick="switchTab('renal')">Renal Function</button>
+            <button type="button" class="tab-btn" onclick="switchTab('urinalysis')">Urinalysis</button>
+            <button type="button" class="tab-btn" onclick="switchTab('blood')">Blood Chemistry</button>
+            <button type="button" class="tab-btn" onclick="switchTab('history')">Medical History</button>
+          </div>
+
+          <!-- Tab 1: Vitals -->
+          <div class="tab-pane active" id="tab-vitals">
+            <div class="input-grid">
+              <div class="form-group">
+                <label for="age">Patient Age (years)</label>
+                <input type="number" id="age" min="1" max="110" value="48" step="1" required />
+                <span class="input-hint">Range: 1 - 100+ years</span>
+              </div>
+              <div class="form-group">
+                <label for="bp_diastolic">Diastolic BP Level</label>
+                <select id="bp_diastolic">
+                  <option value="0">Normal (0)</option>
+                  <option value="1">Elevated / High (1)</option>
+                </select>
+                <span class="input-hint">Diastolic threshold status</span>
+              </div>
+              <div class="form-group">
+                <label for="bp_limit">Blood Pressure Stage Limit</label>
+                <select id="bp_limit">
+                  <option value="0">Optimal / Normotensive (0)</option>
+                  <option value="1">Pre-Hypertension (1)</option>
+                  <option value="2">Stage 2 Hypertension (2)</option>
+                </select>
+                <span class="input-hint">Clinical classification</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Renal Function -->
+          <div class="tab-pane" id="tab-renal">
+            <div class="input-grid">
+              <div class="form-group">
+                <label for="grf">eGFR (mL/min/1.73m²)</label>
+                <input type="number" id="grf" min="5" max="300" value="95" step="0.5" required />
+                <span class="input-hint">Normal: &ge; 90 | Kidney Failure: &lt; 15</span>
+              </div>
+              <div class="form-group">
+                <label for="sc">Serum Creatinine (mg/dL)</label>
+                <input type="number" id="sc" min="0.1" max="40" value="1.1" step="0.05" required />
+                <span class="input-hint">Normal: 0.6 - 1.2 mg/dL</span>
+              </div>
+              <div class="form-group">
+                <label for="bu">Blood Urea (mg/dL)</label>
+                <input type="number" id="bu" min="5" max="400" value="38" step="0.5" required />
+                <span class="input-hint">Normal: 15 - 45 mg/dL</span>
+              </div>
+              <div class="form-group">
+                <label for="bgr">Blood Glucose Random (mg/dL)</label>
+                <input type="number" id="bgr" min="40" max="600" value="110" step="1" required />
+                <span class="input-hint">Normal fasting: 70 - 140 mg/dL</span>
+              </div>
+              <div class="form-group">
+                <label for="sg">Specific Gravity (sg)</label>
+                <input type="number" id="sg" min="1.000" max="1.040" value="1.020" step="0.005" required />
+                <span class="input-hint">Normal: 1.010 - 1.025</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Urinalysis -->
+          <div class="tab-pane" id="tab-urinalysis">
+            <div class="input-grid">
+              <div class="form-group">
+                <label for="al">Albuminuria Grade (al)</label>
+                <select id="al">
+                  <option value="0">0 - None (Normal)</option>
+                  <option value="1">1+ - Mild Trace</option>
+                  <option value="2">2+ - Moderate</option>
+                  <option value="3">3+ - Severe</option>
+                  <option value="4">4+ - Critical</option>
+                </select>
+                <span class="input-hint">Proteinuria excretion marker</span>
+              </div>
+              <div class="form-group">
+                <label for="su">Glucosuria (Sugar Level)</label>
+                <select id="su">
+                  <option value="0">0 - Negative</option>
+                  <option value="1">1+ - Mild</option>
+                  <option value="2">2+ - Moderate</option>
+                  <option value="3">3+ - High</option>
+                  <option value="4">4+ - Severe</option>
+                </select>
+                <span class="input-hint">Urinary glucose indicator</span>
+              </div>
+              <div class="form-group">
+                <label for="rbc">Red Blood Cells in Urine</label>
+                <select id="rbc">
+                  <option value="0">Normal / Negative (0)</option>
+                  <option value="1">Abnormal / Microhematuria (1)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="pc">Pus Cells (pc)</label>
+                <select id="pc">
+                  <option value="0">Normal (0)</option>
+                  <option value="1">Abnormal / Pyuria (1)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="pcc">Pus Cell Clumps (pcc)</label>
+                <select id="pcc">
+                  <option value="0">Not Present (0)</option>
+                  <option value="1">Present (1)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ba">Bacteria (ba)</label>
+                <select id="ba">
+                  <option value="0">Not Present (0)</option>
+                  <option value="1">Present (1)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 4: Blood Chemistry -->
+          <div class="tab-pane" id="tab-blood">
+            <div class="input-grid">
+              <div class="form-group">
+                <label for="hemo">Hemoglobin (g/dL)</label>
+                <input type="number" id="hemo" min="2" max="22" value="14.2" step="0.1" required />
+                <span class="input-hint">Normal: 12.0 - 17.5 g/dL</span>
+              </div>
+              <div class="form-group">
+                <label for="pcv">Packed Cell Volume - Hematocrit (%)</label>
+                <input type="number" id="pcv" min="10" max="65" value="44.0" step="0.5" required />
+                <span class="input-hint">Normal: 38 - 50 %</span>
+              </div>
+              <div class="form-group">
+                <label for="rbcc">Red Blood Cell Count (mcmL)</label>
+                <input type="number" id="rbcc" min="1.0" max="9.0" value="5.1" step="0.1" required />
+                <span class="input-hint">Normal: 4.2 - 5.9 mcmL</span>
+              </div>
+              <div class="form-group">
+                <label for="wbcc">White Blood Cell Count (cells/cumm)</label>
+                <input type="number" id="wbcc" min="1500" max="35000" value="7800" step="100" required />
+                <span class="input-hint">Normal: 4,000 - 11,000</span>
+              </div>
+              <div class="form-group">
+                <label for="sod">Serum Sodium (mEq/L)</label>
+                <input type="number" id="sod" min="90" max="180" value="141" step="0.5" required />
+                <span class="input-hint">Normal: 135 - 145 mEq/L</span>
+              </div>
+              <div class="form-group">
+                <label for="pot">Serum Potassium (mEq/L)</label>
+                <input type="number" id="pot" min="1.5" max="12.0" value="4.4" step="0.1" required />
+                <span class="input-hint">Normal: 3.5 - 5.1 mEq/L</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 5: Medical History -->
+          <div class="tab-pane" id="tab-history">
+            <div class="input-grid">
+              <div class="form-group">
+                <label for="htn">Hypertension (HTN)</label>
+                <select id="htn">
+                  <option value="0">No (0)</option>
+                  <option value="1">Yes (1)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="dm">Diabetes Mellitus (DM)</label>
+                <select id="dm">
+                  <option value="0">No (0)</option>
+                  <option value="1">Yes (1)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cad">Coronary Artery Disease (CAD)</label>
+                <select id="cad">
+                  <option value="0">No (0)</option>
+                  <option value="1">Yes (1)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="appet">Appetite</label>
+                <select id="appet">
+                  <option value="0">Good (0)</option>
+                  <option value="1">Poor / Anorexia (1)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="pe">Pedal Edema</label>
+                <select id="pe">
+                  <option value="0">No (0)</option>
+                  <option value="1">Yes (1)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ane">Anemia</label>
+                <select id="ane">
+                  <option value="0">No (0)</option>
+                  <option value="1">Yes (1)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="runInference()">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Run Clinical Assessment
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="loadPreset('healthy')">
+              Reset Values
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Diagnostic Results Card -->
+      <section class="card results-card">
+        <div class="card-header">
+          <h2>Diagnostic Output & Risk Stratification</h2>
+          <span class="badge badge-pulse" id="calcBadge">Live Neural Model</span>
+        </div>
+
+        <div class="results-content">
+          <!-- Circular Risk Meter -->
+          <div class="risk-meter-container">
+            <div class="circular-chart-wrapper">
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path id="circleProgress" class="circle"
+                  stroke-dasharray="0, 100"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <text x="18" y="19" class="percentage" id="riskPercent">0%</text>
+                <text x="18" y="24" class="risk-subtext">Estimated Risk</text>
+              </svg>
+            </div>
+            <div class="risk-status-box" id="riskStatusBox">
+              <div class="risk-label" id="riskCategoryLabel">Low CKD Risk</div>
+              <div class="risk-desc" id="riskCategoryDesc">Biomarkers indicate healthy renal function and normal glomerular filtration.</div>
+            </div>
+          </div>
+
+          <!-- Neural Network Details & Confidence -->
+          <div class="metrics-row">
+            <div class="metric-pill">
+              <span class="metric-name">Raw Neural Logit (z)</span>
+              <span class="metric-val" id="logitVal">-4.82</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-name">Sigmoid &sigma;(z)</span>
+              <span class="metric-val" id="probVal">0.008</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-name">Confidence</span>
+              <span class="metric-val" id="confidenceVal">99.2%</span>
+            </div>
+          </div>
+
+          <!-- Top Risk Factors Breakdown -->
+          <div class="breakdown-section">
+            <h3>Key Biomarker Contributions</h3>
+            <div id="riskFactorsList" class="factors-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Clinical Recommendations -->
+          <div class="recommendations-box" id="recBox">
+            <h3>Clinical Guidance</h3>
+            <p id="recText">Routine annual screening recommended. Maintain balanced hydration, normal blood pressure, and healthy glycemic control.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Batch Prediction Utility -->
+    <section class="card batch-card">
+      <div class="card-header">
+        <h2>Batch Patient Assessment & CSV Export</h2>
+        <span class="badge">Offline Bulk Processing</span>
+      </div>
+      <div class="batch-content">
+        <p>Upload a CSV file containing patient records or download sample predictions directly.</p>
+        <div class="batch-actions">
+          <label class="btn btn-secondary file-upload-btn">
+            Upload Patient CSV
+            <input type="file" id="csvFileInput" accept=".csv" onchange="handleCSVUpload(event)" style="display:none;" />
+          </label>
+          <button class="btn btn-primary" onclick="generateSampleBatch()">
+            Run Test Sample Batch (20 Patients)
+          </button>
+        </div>
+        <div id="batchResultsTableContainer" style="display:none; margin-top: 1.5rem;">
+          <div class="table-responsive">
+            <table class="batch-table" id="batchTable">
+              <thead>
+                <tr>
+                  <th>Patient #</th>
+                  <th>Age</th>
+                  <th>eGFR</th>
+                  <th>Creatinine</th>
+                  <th>Albumin</th>
+                  <th>Risk Score</th>
+                  <th>Classification</th>
+                </tr>
+              </thead>
+              <tbody id="batchTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Chronic Kidney Disease Risk Prediction • Built with Low-Level PyTorch Model Architecture</p>
+      <p class="disclaimer">Disclaimer: For educational, investigational, and pattern recognition research purposes only.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
