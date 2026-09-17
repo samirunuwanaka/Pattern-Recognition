@@ -1,4 +1,8 @@
-{
+/**
+ * Low-Level In-Browser PyTorch Neural Network Runtime for CKD Risk Assessment
+ */
+
+const EMBEDDED_WEIGHTS = {
   "type": "CKDRiskNet",
   "fc1_w": [
     [
@@ -1875,4 +1879,539 @@
   "fc_out_b": [
     0.10170340538024902
   ]
+};
+const EMBEDDED_PREPROCESSOR = {
+  "feature_columns": [
+    "bp (Diastolic)",
+    "bp limit",
+    "sg",
+    "al",
+    "rbc",
+    "su",
+    "pc",
+    "pcc",
+    "ba",
+    "bgr",
+    "bu",
+    "sod",
+    "sc",
+    "pot",
+    "hemo",
+    "pcv",
+    "rbcc",
+    "wbcc",
+    "htn",
+    "dm",
+    "cad",
+    "appet",
+    "pe",
+    "ane",
+    "grf",
+    "age"
+  ],
+  "feature_labels": {
+    "bp (Diastolic)": "Diastolic Blood Pressure",
+    "bp limit": "Blood Pressure Limit Status",
+    "sg": "Specific Gravity",
+    "al": "Albumin Level",
+    "rbc": "Red Blood Cells (Abnormal/Normal)",
+    "su": "Sugar Level",
+    "pc": "Pus Cell (Abnormal/Normal)",
+    "pcc": "Pus Cell Clumps (Present/Not)",
+    "ba": "Bacteria (Present/Not)",
+    "bgr": "Blood Glucose Random (mg/dL)",
+    "bu": "Blood Urea (mg/dL)",
+    "sod": "Sodium (mEq/L)",
+    "sc": "Serum Creatinine (mg/dL)",
+    "pot": "Potassium (mEq/L)",
+    "hemo": "Hemoglobin (g/dL)",
+    "pcv": "Packed Cell Volume (%)",
+    "rbcc": "Red Blood Cell Count (mcmL)",
+    "wbcc": "White Blood Cell Count (cells/cumm)",
+    "htn": "Hypertension History",
+    "dm": "Diabetes Mellitus History",
+    "cad": "Coronary Artery Disease",
+    "appet": "Appetite (Good/Poor)",
+    "pe": "Pedal Edema",
+    "ane": "Anemia History",
+    "grf": "Glomerular Filtration Rate (eGFR)",
+    "age": "Patient Age"
+  },
+  "means": {
+    "bp (Diastolic)": 0.54,
+    "bp limit": 0.755,
+    "sg": 1.0451309999999998,
+    "al": 1.0190000000000001,
+    "rbc": 0.125,
+    "su": 0.418,
+    "pc": 0.225,
+    "pcc": 0.135,
+    "ba": 0.055,
+    "bgr": 148.673,
+    "bu": 66.92192500000002,
+    "sod": 136.916,
+    "sc": 3.9069499999999993,
+    "pot": 5.894655,
+    "hemo": 12.361875,
+    "pcv": 38.38354999999999,
+    "rbcc": 4.724982500000001,
+    "wbcc": 8702.115,
+    "htn": 0.39,
+    "dm": 0.35,
+    "cad": 0.11,
+    "appet": 0.2,
+    "pe": 0.175,
+    "ane": 0.16,
+    "grf": 68.23372325,
+    "age": 53.7
+  },
+  "stds": {
+    "bp (Diastolic)": 0.4996481173846551,
+    "bp limit": 0.8051186747318746,
+    "sg": 0.07409694036773239,
+    "al": 1.4237889149631204,
+    "rbc": 0.3315488246330816,
+    "su": 1.074405760731702,
+    "pc": 0.4186302142480964,
+    "pcc": 0.3425810984938109,
+    "ba": 0.22855235921889458,
+    "bgr": 84.46604188761779,
+    "bu": 51.30586344207707,
+    "sod": 9.416234457403018,
+    "sc": 3.3111361813670226,
+    "pot": 3.9420253637332907,
+    "hemo": 3.113791393718109,
+    "pcv": 9.132498441633164,
+    "rbcc": 0.9070586878808066,
+    "wbcc": 2995.962261299473,
+    "htn": 0.48897390256222745,
+    "dm": 0.4781665150137575,
+    "cad": 0.31367492695304,
+    "appet": 0.40100376569366847,
+    "pe": 0.38092059869815753,
+    "ane": 0.3675260220507143,
+    "grf": 56.34276136394034,
+    "age": 16.874142449827943
+  },
+  "mins": {
+    "bp (Diastolic)": 0.0,
+    "bp limit": 0.0,
+    "sg": 0.75525,
+    "al": 0.0,
+    "rbc": 0.0,
+    "su": 0.0,
+    "pc": 0.0,
+    "pcc": 0.0,
+    "ba": 0.0,
+    "bgr": 84.0,
+    "bu": 36.075,
+    "sod": 88.5,
+    "sc": 2.7375,
+    "pot": 5.4825,
+    "hemo": 4.574999999999999,
+    "pcv": 13.424999999999999,
+    "rbcc": 2.0175,
+    "wbcc": 3735.0,
+    "htn": 0.0,
+    "dm": 0.0,
+    "cad": 0.0,
+    "appet": 0.0,
+    "pe": 0.0,
+    "ane": 0.0,
+    "grf": 19.963124999999998,
+    "age": 9.0
+  },
+  "maxs": {
+    "bp (Diastolic)": 1.0,
+    "bp limit": 2.0,
+    "sg": 1.1764499999999998,
+    "al": 4.6,
+    "rbc": 1.0,
+    "su": 4.6,
+    "pc": 1.0,
+    "pcc": 1.0,
+    "ba": 1.0,
+    "bgr": 515.1999999999999,
+    "bu": 405.8349999999999,
+    "sod": 181.7,
+    "sc": 33.1775,
+    "pot": 48.9785,
+    "hemo": 18.974999999999998,
+    "pcv": 56.464999999999996,
+    "rbcc": 8.5215,
+    "wbcc": 27622.999999999996,
+    "htn": 1.0,
+    "dm": 1.0,
+    "cad": 1.0,
+    "appet": 1.0,
+    "pe": 1.0,
+    "ane": 1.0,
+    "grf": 262.13559999999995,
+    "age": 85.1
+  },
+  "num_features": 26
+};
+
+let MODEL_WEIGHTS = EMBEDDED_WEIGHTS;
+let PREPROCESSOR = EMBEDDED_PREPROCESSOR;
+
+// Attempt to fetch latest weights if served over HTTP/HTTPS
+async function loadModelArtifacts() {
+  try {
+    const wRes = await fetch('assets/model_weights.json');
+    const pRes = await fetch('assets/preprocessor.json');
+    if (wRes.ok && pRes.ok) {
+      MODEL_WEIGHTS = await wRes.json();
+      PREPROCESSOR = await pRes.json();
+      console.log('Successfully loaded model weights from server.');
+    }
+  } catch (e) {
+    console.log('Serving from local file or standalone mode, using embedded PyTorch weights.');
+  }
 }
+
+// Tab switching
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+  
+  const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+  if (activeBtn) activeBtn.classList.add('active');
+  
+  const pane = document.getElementById('tab-' + tabId);
+  if (pane) pane.classList.add('active');
+}
+
+// Presets
+const PRESETS = {
+  healthy: {
+    age: 36, bp_diastolic: '0', bp_limit: '0', grf: 110, sc: 0.9, bu: 28, bgr: 95, sg: 1.020,
+    al: '0', su: '0', rbc: '0', pc: '0', pcc: '0', ba: '0',
+    hemo: 15.2, pcv: 46.0, rbcc: 5.3, wbcc: 7200, sod: 142, pot: 4.2,
+    htn: '0', dm: '0', cad: '0', appet: '0', pe: '0', ane: '0'
+  },
+  early: {
+    age: 52, bp_diastolic: '1', bp_limit: '1', grf: 68, sc: 1.4, bu: 52, bgr: 145, sg: 1.015,
+    al: '1', su: '1', rbc: '0', pc: '0', pcc: '0', ba: '0',
+    hemo: 12.8, pcv: 38.5, rbcc: 4.4, wbcc: 8900, sod: 137, pot: 4.6,
+    htn: '1', dm: '1', cad: '0', appet: '0', pe: '0', ane: '0'
+  },
+  hypertensive: {
+    age: 61, bp_diastolic: '1', bp_limit: '2', grf: 42, sc: 2.3, bu: 78, bgr: 180, sg: 1.010,
+    al: '2', su: '1', rbc: '1', pc: '0', pcc: '0', ba: '0',
+    hemo: 10.4, pcv: 31.0, rbcc: 3.7, wbcc: 9800, sod: 133, pot: 5.1,
+    htn: '1', dm: '1', cad: '1', appet: '1', pe: '1', ane: '1'
+  },
+  critical: {
+    age: 68, bp_diastolic: '1', bp_limit: '2', grf: 12, sc: 7.8, bu: 165, bgr: 260, sg: 1.008,
+    al: '4', su: '3', rbc: '1', pc: '1', pcc: '1', ba: '1',
+    hemo: 7.6, pcv: 22.0, rbcc: 2.8, wbcc: 13500, sod: 126, pot: 5.9,
+    htn: '1', dm: '1', cad: '1', appet: '1', pe: '1', ane: '1'
+  }
+};
+
+function loadPreset(key) {
+  const p = PRESETS[key];
+  if (!p) return;
+  
+  for (const [k, v] of Object.entries(p)) {
+    const el = document.getElementById(k);
+    if (el) el.value = v;
+  }
+  runInference();
+}
+
+// Low-Level Math & Matrix Operations
+function dotProduct(vecA, vecB) {
+  let sum = 0;
+  for (let i = 0; i < vecA.length; i++) {
+    sum += vecA[i] * vecB[i];
+  }
+  return sum;
+}
+
+function matVecMul(matrix, vector, bias) {
+  const out = new Float64Array(matrix.length);
+  for (let r = 0; r < matrix.length; r++) {
+    let s = bias ? bias[r] : 0;
+    const row = matrix[r];
+    for (let c = 0; c < row.length; c++) {
+      s += row[c] * vector[c];
+    }
+    out[r] = s;
+  }
+  return out;
+}
+
+function batchNormEval(x, mean, variance, weight, bias, eps = 1e-5) {
+  const out = new Float64Array(x.length);
+  for (let i = 0; i < x.length; i++) {
+    const normalized = (x[i] - mean[i]) / Math.sqrt(variance[i] + eps);
+    out[i] = normalized * weight[i] + bias[i];
+  }
+  return out;
+}
+
+function relu(vector) {
+  const out = new Float64Array(vector.length);
+  for (let i = 0; i < vector.length; i++) {
+    out[i] = Math.max(0, vector[i]);
+  }
+  return out;
+}
+
+function sigmoid(z) {
+  return 1 / (1 + Math.exp(-Math.max(-30, Math.min(30, z))));
+}
+
+// Extract input feature vector from form
+function getFormFeatureVector() {
+  const cols = PREPROCESSOR.feature_columns;
+  const rawVec = [];
+  
+  for (let col of cols) {
+    let id = col;
+    if (col === 'bp (Diastolic)') id = 'bp_diastolic';
+    else if (col === 'bp limit') id = 'bp_limit';
+    
+    const el = document.getElementById(id);
+    let val = el ? parseFloat(el.value) : 0;
+    if (isNaN(val)) val = 0;
+    rawVec.push(val);
+  }
+  
+  return rawVec;
+}
+
+// Forward Pass of CKDRiskNet
+function forwardPass(rawFeatures) {
+  const cols = PREPROCESSOR.feature_columns;
+  const means = PREPROCESSOR.means;
+  const stds = PREPROCESSOR.stds;
+  
+  // 1. Z-score Standardization
+  const x_scaled = new Float64Array(rawFeatures.length);
+  for (let i = 0; i < rawFeatures.length; i++) {
+    const colName = cols[i];
+    const m = means[colName] || 0;
+    const s = stds[colName] || 1;
+    x_scaled[i] = (rawFeatures[i] - m) / (s === 0 ? 1 : s);
+  }
+  
+  const w = MODEL_WEIGHTS;
+  
+  // Layer 1
+  let h1 = matVecMul(w.fc1_w, x_scaled, w.fc1_b);
+  h1 = batchNormEval(h1, w.bn1_mean, w.bn1_var, w.bn1_w, w.bn1_b);
+  h1 = relu(h1);
+  
+  // Layer 2
+  let h2 = matVecMul(w.fc2_w, h1, w.fc2_b);
+  h2 = batchNormEval(h2, w.bn2_mean, w.bn2_var, w.bn2_w, w.bn2_b);
+  h2 = relu(h2);
+  
+  // Layer 3
+  let h3 = matVecMul(w.fc3_w, h2, w.fc3_b);
+  h3 = relu(h3);
+  
+  // Output Logit
+  const logit = dotProduct(w.fc_out_w[0], h3) + w.fc_out_b[0];
+  const prob = sigmoid(logit);
+  
+  // Approximate Feature Impact via first layer projection
+  const featureImpacts = [];
+  for (let i = 0; i < rawFeatures.length; i++) {
+    let imp = 0;
+    for (let j = 0; j < w.fc1_w.length; j++) {
+      imp += Math.abs(w.fc1_w[j][i]) * x_scaled[i];
+    }
+    featureImpacts.push({
+      name: PREPROCESSOR.feature_labels[cols[i]] || cols[i],
+      key: cols[i],
+      impact: imp,
+      raw: rawFeatures[i]
+    });
+  }
+  
+  featureImpacts.sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact));
+  
+  return {
+    logit: logit,
+    probability: prob,
+    scaledFeatures: x_scaled,
+    featureImpacts: featureImpacts
+  };
+}
+
+// Run inference and update UI
+function runInference() {
+  const rawFeatures = getFormFeatureVector();
+  const res = forwardPass(rawFeatures);
+  
+  const riskPct = Math.round(res.probability * 100);
+  const probVal = res.probability.toFixed(4);
+  const logitVal = res.logit.toFixed(3);
+  
+  // Update gauge & numbers
+  const circle = document.getElementById('circleProgress');
+  const percentText = document.getElementById('riskPercent');
+  const catLabel = document.getElementById('riskCategoryLabel');
+  const catDesc = document.getElementById('riskCategoryDesc');
+  const recText = document.getElementById('recText');
+  const recBox = document.getElementById('recBox');
+  
+  document.getElementById('logitVal').innerText = logitVal;
+  document.getElementById('probVal').innerText = probVal;
+  document.getElementById('confidenceVal').innerText = (Math.max(res.probability, 1 - res.probability) * 100).toFixed(1) + '%';
+  
+  circle.setAttribute('stroke-dasharray', `${riskPct}, 100`);
+  percentText.textContent = riskPct + '%';
+  
+  // Categorize
+  if (riskPct < 25) {
+    circle.style.stroke = 'var(--healthy-color)';
+    catLabel.textContent = 'Low CKD Risk';
+    catLabel.style.color = 'var(--healthy-color)';
+    catDesc.textContent = 'Biomarkers reflect normal renal function with preserved glomerular filtration.';
+    recBox.style.background = 'var(--healthy-bg)';
+    recBox.style.borderColor = '#bbf7d0';
+    recText.textContent = 'Routine annual wellness checks. Maintain healthy hydration, balanced sodium intake, and regular blood pressure monitoring.';
+  } else if (riskPct < 60) {
+    circle.style.stroke = 'var(--warning-color)';
+    catLabel.textContent = 'Moderate / Borderline Risk';
+    catLabel.style.color = 'var(--warning-color)';
+    catDesc.textContent = 'Early clinical indicators suggest potential kidney stress or mild glomerular impairment.';
+    recBox.style.background = 'var(--warning-bg)';
+    recBox.style.borderColor = '#fde68a';
+    recText.textContent = 'Recommend comprehensive renal function re-evaluation (eGFR, microalbuminuria, lipid profile) within 3-6 months. Optimize hypertension and diabetes management.';
+  } else if (riskPct < 85) {
+    circle.style.stroke = 'var(--orange-color)';
+    catLabel.textContent = 'High CKD Risk';
+    catLabel.style.color = 'var(--orange-color)';
+    catDesc.textContent = 'Biomarkers strongly align with significant renal impairment or Stage 3 CKD.';
+    recBox.style.background = 'var(--orange-bg)';
+    recBox.style.borderColor = '#fed7aa';
+    recText.textContent = 'Urgent nephrology consultation indicated. Initiate renoprotective therapies (ACEi/ARB/SGLT2i as appropriate), monitor electrolytes, and adjust dietary protein.';
+  } else {
+    circle.style.stroke = 'var(--danger-color)';
+    catLabel.textContent = 'Critical / Stage 4-5 CKD Risk';
+    catLabel.style.color = 'var(--danger-color)';
+    catDesc.textContent = 'Severe renal dysfunction. Biomarkers indicate advanced kidney failure or impending uremia.';
+    recBox.style.background = 'var(--danger-bg)';
+    recBox.style.borderColor = '#fecaca';
+    recText.textContent = 'Immediate specialist nephrology management required. Prepare renal replacement therapy / hemodialysis pathway and intensive electrolyte management.';
+  }
+  
+  // Top risk contributors
+  const listEl = document.getElementById('riskFactorsList');
+  listEl.innerHTML = '';
+  
+  res.featureImpacts.slice(0, 5).forEach(f => {
+    const isRisk = f.impact > 0;
+    const item = document.createElement('div');
+    item.className = 'factor-item ' + (isRisk ? 'factor-risk' : 'factor-protect');
+    item.innerHTML = `
+      <span class="factor-title">${f.name}</span>
+      <span class="factor-impact" style="color: ${isRisk ? 'var(--danger-color)' : 'var(--healthy-color)'}">
+        ${isRisk ? '+ High Risk Factor' : '- Protective/Normal'}
+      </span>
+    `;
+    listEl.appendChild(item);
+  });
+}
+
+// Batch CSV Processing
+function generateSampleBatch() {
+  const samples = [
+    PRESETS.healthy,
+    PRESETS.early,
+    PRESETS.hypertensive,
+    PRESETS.critical,
+    { ...PRESETS.healthy, age: 62, htn: '1' },
+    { ...PRESETS.early, sc: 1.8, bu: 65 },
+    { ...PRESETS.hypertensive, hemo: 9.8, grf: 35 },
+    { ...PRESETS.critical, sc: 8.5, grf: 9 }
+  ];
+  
+  const container = document.getElementById('batchResultsTableContainer');
+  const tbody = document.getElementById('batchTableBody');
+  tbody.innerHTML = '';
+  
+  samples.forEach((sample, idx) => {
+    const raw = PREPROCESSOR.feature_columns.map(col => {
+      let id = col;
+      if (col === 'bp (Diastolic)') id = 'bp_diastolic';
+      else if (col === 'bp limit') id = 'bp_limit';
+      return parseFloat(sample[id] !== undefined ? sample[id] : 0);
+    });
+    
+    const out = forwardPass(raw);
+    const scorePct = Math.round(out.probability * 100);
+    const isCKD = scorePct >= 50;
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>#${idx + 1}</strong></td>
+      <td>${sample.age || 45}</td>
+      <td>${sample.grf || 90}</td>
+      <td>${sample.sc || 1.0}</td>
+      <td>${sample.al || 0}</td>
+      <td><strong>${scorePct}%</strong></td>
+      <td><span class="badge" style="background:${isCKD ? 'var(--danger-bg)' : 'var(--healthy-bg)'}; color:${isCKD ? 'var(--danger-color)' : 'var(--healthy-color)'}">${isCKD ? 'CKD Risk' : 'Healthy'}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  
+  container.style.display = 'block';
+}
+
+function handleCSVUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+    if (lines.length < 2) return;
+    
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    const tbody = document.getElementById('batchTableBody');
+    tbody.innerHTML = '';
+    
+    lines.slice(1, 31).forEach((line, idx) => {
+      const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+      const rowMap = {};
+      headers.forEach((h, i) => rowMap[h] = vals[i]);
+      
+      const raw = PREPROCESSOR.feature_columns.map(col => {
+        return parseFloat(rowMap[col] || 0) || 0;
+      });
+      
+      const out = forwardPass(raw);
+      const scorePct = Math.round(out.probability * 100);
+      const isCKD = scorePct >= 50;
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>#${idx + 1}</strong></td>
+        <td>${rowMap['age'] || '-'}</td>
+        <td>${rowMap['grf'] || '-'}</td>
+        <td>${rowMap['sc'] || '-'}</td>
+        <td>${rowMap['al'] || '-'}</td>
+        <td><strong>${scorePct}%</strong></td>
+        <td><span class="badge" style="background:${isCKD ? 'var(--danger-bg)' : 'var(--healthy-bg)'}; color:${isCKD ? 'var(--danger-color)' : 'var(--healthy-color)'}">${isCKD ? 'CKD Risk' : 'Healthy'}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    
+    document.getElementById('batchResultsTableContainer').style.display = 'block';
+  };
+  reader.readAsText(file);
+}
+
+// Initialize
+window.addEventListener('DOMContentLoaded', () => {
+  loadModelArtifacts();
+  runInference();
+});
